@@ -8,6 +8,11 @@ lang: all
 go mod init folder-name or www.github.com/userName/repo-name
 ```
 
+## get gorilla mux
+```
+go get -u github.com/gorilla/mux
+```
+
 ## Got a problem with runing? GOPATH should be set to
 ```
 export GOPATH=$GOROOT
