@@ -14,7 +14,6 @@ import (
 	"go.mongodb.org/mongo.driver/bson/primitive"
 	"go.mongodb.org/mongo.driver/mongo"
 	"go.mongodb.org/mongo.driver/mongo/options"
-
 )
 
 var collection *mongo.Collection
@@ -60,12 +59,35 @@ func GetAllTask(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(playload)
 }
 
-func CreateTask(w http.ResponseWriter, r *http.Request) {}
+func CreateTask(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	var task models.ToDoList
+	json.NewEncoder(r.body).Decode(&task)
+	insertOneTask(task)
+	json.NewEncoder(w).Encode(task)
+}
 
-func TaskComplete(w http.ResponseWriter, r *http.Request) {}
+func TaskComplete(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	params := mux.Vars(r)
+	TaskComplete(params["id"])
+	json.NewEncoder(w).Encode(params["id"])
+}
 
 func UndoTask(w http.ResponseWriter, r *http.Request) {}
 
 func DeleteTask(w http.ResponseWriter, r *http.Request) {}
 
 func DeleteAllTask(w http.ResponseWriter, r *http.Request) {}
+
+//
+func getAllTask() {}
+
+func TaskComplete(task string) {}
