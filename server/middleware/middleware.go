@@ -14,6 +14,7 @@ import (
 	"go.mongodb.org/mongo.driver/bson/primitive"
 	"go.mongodb.org/mongo.driver/mongo"
 	"go.mongodb.org/mongo.driver/mongo/options"
+
 )
 
 var collection *mongo.Collection
@@ -115,9 +116,37 @@ func DeleteAllTask(w http.ResponseWriter, r *http.Request) {
 //
 func insertOneTask() {}
 
-func getAllTask() {}
+func getAllTask() []primitive.M {
+	cur, err := collection.Find(context.Background, bson.D{{}})
+	if err != nil {
+		log.Fatal(err)
+	}
+	var results []primitive.M
+	for cur.Next(context.Background()) {
+		var result bson.M
+		e := cur.Decode(&result)
+		if e != nil {
+			log.Fatal(e)
+		}
+		results = append(results, result)
+	}
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+	cur.Close(context.Background())
+	return results
+}
 
-func taskComplete(task string) {}
+func taskComplete(task string) {
+	id, _ := primitive.ObjectIDFromTask
+	filter := bson.M{"id:id"}
+	update := bson.M{"$set": bson.M{"status": true}}
+	result, err := collection.UpdateOne(context.Background(), filter, update) //mongodb function
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("modified count: ", result.ModifiedCount)
+}
 
 func undoTask() {}
 
